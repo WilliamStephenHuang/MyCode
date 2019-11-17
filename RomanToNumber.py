@@ -1,30 +1,53 @@
-def RomanToInt(num: int) -> str:
-    numberlist = []
-    while num >= 10:
-        numberlist.append(num % 10)
-        num //= 10
+def function(string, list, base)->int:
+    if string in list:
+        return list.index(string) * base
     else:
-        numberlist.append(num)
-    length = len(numberlist)
+        return 0
+
+
+def romanToInt(s: str) -> int:
     T = ['', 'M', 'MM', 'MMM']
     H = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM']
     t = ['', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC']
     I = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX']
 
-    ans = I[numberlist[0]]
-    if length > 1:
-        ans = t[numberlist[1]] + ans
-    if length > 2:
-        ans = H[numberlist[2]] + ans
-    if length > 3:
-        ans = T[numberlist[3]] + ans
+    length = len(s)
+    start = 0
+    ans = 0
+    base = 1000
+    for list in (T, H, t, I):
+        last = 0
+        flag = 0
+        for end in range(start, length):
+            # 保存计算结果
+            temp = function(s[start: end + 1], list, base)
+            if temp != 0 and end != length - 1:
+                last = temp
+                flag = 1
+                continue
+            elif flag == 1 and temp == 0 and end == length - 1:
+                ans += last
+                base = 1000
+                for list in (T, H, t, I):
+                    temp = function(s[end: end + 1], list, base)
+                    if temp != 0:
+                        ans += temp
+                        print(temp)
+                    else:
+                        base //= 10
+            elif end == length - 1:
+                ans += temp
+            else:
+                ans += last
+                start = end
+            base //= 10
+            break
 
     return ans
 
 
-while True:
-    a = input()
-    print(intToRoman(int(a)))
+romanToInt('MCMXCIV')
+
 
 # 数字转罗马字
 # numberBase = [1, 10, 100, 1000]
